@@ -435,6 +435,6 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
 
   public static void main(String args[])
   {
-    new MouseXY();
+    new TracingPaper();
   }
 }
