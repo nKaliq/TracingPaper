@@ -8,7 +8,7 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
   int x, y, red, green, blue, clickCounter;
   String str = "", clickedButton = "";
   Label coordinates, mouse_activity;
-  TextField functionName, colorR, colorG, colorB;
+  TextField functionName, colorR, colorG, colorB, stroke;
   Checkbox fill;
 
   ArrayList<Integer> xArr, yArr, xAll, yAll;
@@ -60,6 +60,7 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     colorR = new TextField("0");
     colorG = new TextField("0");
     colorB = new TextField("0");
+    stroke = new TextField("1");
     fill = new Checkbox("Fill", false);
 
     footer.setPreferredSize(new Dimension(800, 30));
@@ -75,10 +76,11 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     shapes.add(new Label("function:"));
     shapes.add(functionName);
     shapes.add(draw);
-    shapes.add(new Label("Color RGB:"));
+    shapes.add(new Label("RGB/Stroke:"));
     shapes.add(colorR);
     shapes.add(colorG);
     shapes.add(colorB);
+    shapes.add(stroke);
     shapes.add(set);
     shapes.add(save);
     shapes.add(clear);
@@ -117,12 +119,15 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
       if (clickedButton == "DRAW") {
         writer.newLine();
         writer.write("void " + functionName.getText() + "(int x, int y ,Graphics g){");
+        writer.newLine();
         writer.write("Graphics2D g2D = (Graphics2D) g;");
       } else if (clickedButton == "SET") {
         String color = colorR.getText() + "," + colorG.getText() + "," + colorB.getText();
         writer.newLine();
         writer.write("g.setColor(new Color(" + color + "));");
-
+        writer.newLine();
+        writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));"); 
+        
       } else if (clickedButton == "poly" && !(fill.getState())) {
         StringBuilder xPoints = new StringBuilder("" + xArr);
         StringBuilder yPoints = new StringBuilder("" + yArr);
@@ -404,7 +409,7 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     //set stroke widht
     g.setColor(Color.BLACK);
     Graphics2D g2D = (Graphics2D) g;      
-    g2D.setStroke(new BasicStroke(20F));  
+    g2D.setStroke(new BasicStroke(Float.parseFloat(stroke.getText())));  
     g2D.drawLine(20, 50, 50, 50);
 
     // for creating tracing marks
@@ -424,7 +429,6 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     }
 
     //g.drawString(x + "," + y,  x+10, y -10);  // displays the x and y position
-    //g.drawString(str, x+10, y+20);            // displays the action performed
     }catch(IllegalArgumentException e){
         System.out.println("Invalid Color WARNING: RGB Ranges should be within 0-255");
     }catch(Exception exception){
