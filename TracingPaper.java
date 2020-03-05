@@ -2,18 +2,16 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class TracingPaper extends Frame implements MouseListener, MouseMotionListener, WindowListener, ActionListener {
   int x, y, red, green, blue, clickCounter;
   String str = "", clickedButton = "";
   Label coordinates, mouse_activity;
-  TextField functionName, colorR, colorG, colorB, stroke;
+  TextField functionName, colorR, colorG, colorB, stroke ,startAngle, arcAngle;
   Checkbox fill;
 
   ArrayList<Integer> xArr, yArr, xAll, yAll;
   BufferedWriter writer;
-  Scanner input;
 
   public TracingPaper() {
     clickCounter = 0;
@@ -22,7 +20,6 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     xAll = new ArrayList<Integer>();
     yAll = new ArrayList<Integer>();
 
-    input = new Scanner(System.in);
     // open empty file for writing;
     try {
       writer = new BufferedWriter(new FileWriter("./trace.txt", true)); // Set true for append mode
@@ -62,6 +59,8 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     colorB = new TextField("0");
     stroke = new TextField("1");
     fill = new Checkbox("Fill", false);
+    startAngle = new TextField(1);
+    arcAngle = new TextField(1);
 
     footer.setPreferredSize(new Dimension(800, 30));
     shapes.setPreferredSize(new Dimension(800, 30));
@@ -70,6 +69,8 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     shapes.add(fill);
     shapes.add(oval);
     shapes.add(rect);
+    shapes.add(startAngle);
+    shapes.add(arcAngle);
     shapes.add(arc);
     shapes.add(line);
     shapes.add(poly);
@@ -245,9 +246,8 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
           int width = Math.abs(xArr.get(1) - xPoint);
           int height = Math.abs(yArr.get(1) - yPoint);
 
-          System.out.println("enter startAngle and arcAngle to draw Arc");
-          int startAngle = input.nextInt();
-          int arcAngle = input.nextInt();
+          int startAng = Integer.parseInt(startAngle.getText());
+          int arcAng = Integer.parseInt(arcAngle.getText());
 
           String values = xPoint + "+x," + yPoint + "+y," + width + "," + height + "," + startAngle + "," + arcAngle;
           writer.newLine();
@@ -263,9 +263,8 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
           int width = Math.abs(xArr.get(1) - xPoint);
           int height = Math.abs(yArr.get(1) - yPoint);
 
-          System.out.println("enter startAngle and arcAngle to draw Arc");
-          int startAngle = input.nextInt();
-          int arcAngle = input.nextInt();
+          int startAng = Integer.parseInt(startAngle.getText());
+          int arcAng = Integer.parseInt(arcAngle.getText());
 
           String values = xPoint + "+x," + yPoint + "+y," + width + "," + height + "," + startAngle + "," + arcAngle;
           writer.newLine();
