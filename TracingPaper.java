@@ -27,7 +27,7 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     try {
       writer = new BufferedWriter(new FileWriter("./trace.txt", true)); // Set true for append mode
     } catch (Exception exception) {
-      System.out.println("FILE IO EXCEPTION");
+      System.out.println("Exception occoured while opening filse");
     }
 
     Panel footer = new Panel();
@@ -127,7 +127,7 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
         writer.write("g.setColor(new Color(" + color + "));");
         writer.newLine();
         writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));"); 
-        
+
       } else if (clickedButton == "poly" && !(fill.getState())) {
         StringBuilder xPoints = new StringBuilder("" + xArr);
         StringBuilder yPoints = new StringBuilder("" + yArr);
@@ -225,14 +225,15 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
         }
       } else if (clickedButton == "line") {
         try {
-          Integer xPoint1 = xArr.get(0);
-          Integer yPoint1 = yArr.get(0);
-          Integer xPoint2 = xArr.get(1);
-          Integer yPoint2 = yArr.get(1);
-
-          String values = xPoint1 + "+x," + yPoint1 + "+y," + xPoint2 + "+x," + yPoint2 + "+y";
-          writer.newLine();
-          writer.write("g.drawLine(" + values + ");");
+          
+          for(int i=0; i< xArr.size()-1 ;i++){
+            writer.newLine();
+            int x0 = xArr.get(i);
+            int y0 = yArr.get(i);
+            int x1 = xArr.get(i+1);
+            int y1 = yArr.get(i+1);
+            writer.write("g.drawLine("+x0+","+y0+","+x1+","+y1+");");
+          }
 
         } catch (Exception exception) {
           System.out.println("Insufficient value of Line: " + exception);
