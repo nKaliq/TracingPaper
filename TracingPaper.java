@@ -249,7 +249,7 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
           int startAng = Integer.parseInt(startAngle.getText());
           int arcAng = Integer.parseInt(arcAngle.getText());
 
-          String values = xPoint + "+x," + yPoint + "+y," + width + "," + height + "," + startAngle + "," + arcAngle;
+          String values = xPoint + "+x," + yPoint + "+y," + width + "," + height + "," + startAng + "," + arcAng;
           writer.newLine();
           writer.write("g.drawArc(" + values + ");");
 
@@ -266,7 +266,7 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
           int startAng = Integer.parseInt(startAngle.getText());
           int arcAng = Integer.parseInt(arcAngle.getText());
 
-          String values = xPoint + "+x," + yPoint + "+y," + width + "," + height + "," + startAngle + "," + arcAngle;
+          String values = xPoint + "+x," + yPoint + "+y," + width + "," + height + "," + startAng + "," + arcAng;
           writer.newLine();
           writer.write("g.fillArc(" + values + ");");
 
@@ -283,8 +283,9 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
         // open empty file for writing;
         try {
           writer = new BufferedWriter(new FileWriter("./trace.txt", true)); // Set true for append mode
+          //Runtime.getRuntime().exec("more ./trace.txt");
         } catch (Exception exception) {
-          System.out.println("FILE IO EXCEPTION");
+          System.out.println("exception in opening file or launching cmd");
         }
       }
       if (clickedButton == "CLEAR") {
