@@ -30,14 +30,14 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     Panel footer = new Panel();
     Panel shapes = new Panel();
     // button setup .---------------------------
-    Button oval, rect, arc, line, poly, draw, set, save, clear;
+    Button oval, rect, arc, line, poly, draw, save, clear;
     oval = new Button("oval");
     rect = new Button("rect");
     arc = new Button("arc");
     line = new Button("line");
     poly = new Button("poly");
     draw = new Button("DRAW");
-    set = new Button("SET");
+    //set = new Button("SET");
     save = new Button("SAVE");
     clear = new Button("CLEAR");
 
@@ -47,7 +47,7 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     line.addActionListener(this);
     poly.addActionListener(this);
     draw.addActionListener(this);
-    set.addActionListener(this);
+    //set.addActionListener(this);
     save.addActionListener(this);
     clear.addActionListener(this);
 
@@ -82,7 +82,7 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     shapes.add(colorG);
     shapes.add(colorB);
     shapes.add(stroke);
-    shapes.add(set);
+    //shapes.add(set);
     shapes.add(save);
     shapes.add(clear);
 
@@ -122,14 +122,22 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
         writer.write("void " + functionName.getText() + "(int x, int y ,Graphics g){");
         writer.newLine();
         writer.write("Graphics2D g2D = (Graphics2D) g;");
-      } else if (clickedButton == "SET") {
+      /*} else if (clickedButton == "SET") {
         String color = colorR.getText() + "," + colorG.getText() + "," + colorB.getText();
         writer.newLine();
         writer.write("g.setColor(new Color(" + color + "));");
         writer.newLine();
         writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));"); 
-
+        */
       } else if (clickedButton == "poly" && !(fill.getState())) {
+
+        //setting up color and stroke
+        String color = colorR.getText() + "," + colorG.getText() + "," + colorB.getText();
+        writer.newLine();
+        writer.write("g.setColor(new Color(" + color + "));");
+        writer.newLine();
+        writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
+
         StringBuilder xPoints = new StringBuilder("" + xArr);
         StringBuilder yPoints = new StringBuilder("" + yArr);
         xPoints.deleteCharAt(0);
@@ -149,6 +157,14 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
         writer.newLine();
         writer.write("g.drawPolygon(xpoints,ypoints,points);");
       } else if (clickedButton == "poly" && fill.getState()) {
+
+//setting up color and stroke
+String color = colorR.getText() + "," + colorG.getText() + "," + colorB.getText();
+writer.newLine();
+writer.write("g.setColor(new Color(" + color + "));");
+writer.newLine();
+writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
+
         StringBuilder xPoints = new StringBuilder("" + xArr);
         StringBuilder yPoints = new StringBuilder("" + yArr);
         xPoints.deleteCharAt(0);
@@ -169,6 +185,13 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
         writer.write("g.fillPolygon(xpoints,ypoints,points);");
       } else if (clickedButton == "oval" && !(fill.getState())) {
 
+          //setting up color and stroke
+        String color = colorR.getText() + "," + colorG.getText() + "," + colorB.getText();
+        writer.newLine();
+        writer.write("g.setColor(new Color(" + color + "));");
+        writer.newLine();
+        writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
+
         try {
           Integer xPoint = xArr.get(0);
           Integer yPoint = yArr.get(0);
@@ -184,6 +207,13 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
 
       } else if (clickedButton == "oval" && fill.getState()) {
 
+          //setting up color and stroke
+        String color = colorR.getText() + "," + colorG.getText() + "," + colorB.getText();
+        writer.newLine();
+        writer.write("g.setColor(new Color(" + color + "));");
+        writer.newLine();
+        writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
+
         try {
           Integer xPoint = xArr.get(0);
           Integer yPoint = yArr.get(0);
@@ -197,6 +227,13 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
           System.out.println("Insufficient value of FillOval: " + exception);
         }
       } else if (clickedButton == "rect" && !(fill.getState())) {
+
+            //setting up color and stroke
+        String color = colorR.getText() + "," + colorG.getText() + "," + colorB.getText();
+        writer.newLine();
+        writer.write("g.setColor(new Color(" + color + "));");
+        writer.newLine();
+        writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
         try {
           Integer xPoint1 = xArr.get(0);
           Integer yPoint1 = yArr.get(0);
@@ -211,6 +248,14 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
           System.out.println("Insufficient value of Rectangle: " + exception);
         }
       } else if (clickedButton == "rect" && fill.getState()) {
+
+          //setting up color and stroke
+        String color = colorR.getText() + "," + colorG.getText() + "," + colorB.getText();
+        writer.newLine();
+        writer.write("g.setColor(new Color(" + color + "));");
+        writer.newLine();
+        writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
+
         try {
           Integer xPoint1 = xArr.get(0);
           Integer yPoint1 = yArr.get(0);
@@ -225,6 +270,14 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
           System.out.println("Insufficient value of Fill Rectangle: " + exception);
         }
       } else if (clickedButton == "line") {
+
+            //setting up color and stroke
+        String color = colorR.getText() + "," + colorG.getText() + "," + colorB.getText();
+        writer.newLine();
+        writer.write("g.setColor(new Color(" + color + "));");
+        writer.newLine();
+        writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
+
         try {
           
           for(int i=0; i< xArr.size()-1 ;i++){
@@ -240,6 +293,15 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
           System.out.println("Insufficient value of Line: " + exception);
         }
       } else if (clickedButton == "arc" && !(fill.getState())) {
+
+            //setting up color and stroke
+        String color = colorR.getText() + "," + colorG.getText() + "," + colorB.getText();
+        writer.newLine();
+        writer.write("g.setColor(new Color(" + color + "));");
+        writer.newLine();
+        writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
+
+
         try {
           Integer xPoint = xArr.get(0);
           Integer yPoint = yArr.get(0);
@@ -257,6 +319,15 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
           System.out.println("Insufficient value of arc: " + exception);
         }
       } else if (clickedButton == "arc" && fill.getState()) {
+
+            //setting up color and stroke
+        String color = colorR.getText() + "," + colorG.getText() + "," + colorB.getText();
+        writer.newLine();
+        writer.write("g.setColor(new Color(" + color + "));");
+        writer.newLine();
+        writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
+
+
         try {
           Integer xPoint = xArr.get(0);
           Integer yPoint = yArr.get(0);
