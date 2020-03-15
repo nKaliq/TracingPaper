@@ -46,7 +46,7 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     draw = new Button("BUILD");
     //set = new Button("SET");
     save = new Button("SAVE");
-    clear = new Button("CLEAR");
+    clear = new Button("DROP INPUT");
 
     Button colorButtons[]= new Button[15]; //set color equavelnt to c color numbers
     
@@ -272,6 +272,8 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
         writer.write("int points=" + yArr.size() + ";");
         writer.newLine();
         writer.write("g.drawPolygon(xpoints,ypoints,points);");
+        clearLastInput();
+
       } else if (clickedButton == "poly" && fill.getState()) {
 
 //setting up color and stroke
@@ -299,6 +301,8 @@ writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
         writer.write("int points=" + yArr.size() + ";");
         writer.newLine();
         writer.write("g.fillPolygon(xpoints,ypoints,points);");
+        
+        clearLastInput();
       } else if (clickedButton == "oval" && !(fill.getState())) {
 
           //setting up color and stroke
@@ -316,6 +320,7 @@ writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
           final String values = xPoint + "+x ," + yPoint + "+y ," + width + "," + height;
           writer.newLine();
           writer.write("g.drawOval(" + values + ");");
+          clearLastInput();
 
         } catch (final Exception exception) {
           System.out.println("Insufficient value of Oval: " + exception);
@@ -338,6 +343,7 @@ writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
           final String values = xPoint + "+x ," + yPoint + "+y ," + width + "," + height;
           writer.newLine();
           writer.write("g.fillOval(" + values + ");");
+          clearLastInput();
 
         } catch (final Exception exception) {
           System.out.println("Insufficient value of FillOval: " + exception);
@@ -359,6 +365,7 @@ writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
           final String values = xPoint1 + "+x," + yPoint1 + "+y," + width + "," + height;
           writer.newLine();
           writer.write("g.drawRect(" + values + ");");
+          clearLastInput();
 
         } catch (final Exception exception) {
           System.out.println("Insufficient value of Rectangle: " + exception);
@@ -381,6 +388,7 @@ writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
           final String values = xPoint1 + "+x," + yPoint1 + "+y," + width + "," + height;
           writer.newLine();
           writer.write("g.fillRect(" + values + ");");
+          clearLastInput();
 
         } catch (final Exception exception) {
           System.out.println("Insufficient value of Fill Rectangle: " + exception);
@@ -403,6 +411,7 @@ writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
             final int x1 = xArr.get(i+1);
             final int y1 = yArr.get(i+1);
             writer.write("g.drawLine("+x0+","+y0+","+x1+","+y1+");");
+            clearLastInput();
           }
 
         } catch (final Exception exception) {
@@ -429,6 +438,7 @@ writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
           final String values = xPoint + "+x," + yPoint + "+y," + width + "," + height + "," + startAng + "," + arcAng;
           writer.newLine();
           writer.write("g.drawArc(" + values + ");");
+          clearLastInput();
 
         } catch (final Exception exception) {
           System.out.println("Insufficient value of arc: " + exception);
@@ -454,6 +464,7 @@ writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
           final String values = xPoint + "+x," + yPoint + "+y," + width + "," + height + "," + startAng + "," + arcAng;
           writer.newLine();
           writer.write("g.fillArc(" + values + ");");
+          clearLastInput();
 
         } catch (final Exception exception) {
           System.out.println("Insufficient value of FillArc: " + exception);
@@ -473,21 +484,23 @@ writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
           System.out.println("exception in opening file or launching cmd");
         }
       }
-      if (clickedButton == "CLEAR") {
-        clickCounter = 0;
-        clickedButton = "";
-        xAll.addAll(xArr);
-        yAll.addAll(yArr);
-        xArr = new ArrayList<Integer>();
-        yArr = new ArrayList<Integer>();
-        System.out.println("xArray ,yArray, clickCounter, clickedButton have been cleared");
+      if (clickedButton == "DROP INPUT") {
+        clearLastInput();
       }
 
     } catch (final Exception exception) {
       System.out.println("IOException Occoured:" + exception);
     }
   }
-
+  public void clearLastInput(){
+    clickCounter = 0;
+    clickedButton = "";
+    xAll.addAll(xArr);
+    yAll.addAll(yArr);
+    xArr = new ArrayList<Integer>();
+    yArr = new ArrayList<Integer>();
+    System.out.println("xArray ,yArray, clickCounter, clickedButton have been cleared");
+  }
   // override WindowListner seven abstract methods //withoud use
   public void windowClosing(final WindowEvent e) {
     try {
@@ -617,9 +630,9 @@ writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
     if(xAll.size()>0 && yAll.size()>0){
       g.setColor(Color.BLACK);
       for(int i=0; i< xAll.size() ;i++){
-        g.drawOval(xAll.get(i)-2,yAll.get(i)-2,3,3);
-        if(i<xAll.size()-1)
-        g.drawLine(xAll.get(i),yAll.get(i),xAll.get(i+1),yAll.get(i+1));
+        g.drawOval(xAll.get(i)-2,yAll.get(i)-2,3,3);                  //draw tracing history marks
+        //if(i<xAll.size()-1)                                         // draw tracing history lines
+        //g.drawLine(xAll.get(i),yAll.get(i),xAll.get(i+1),yAll.get(i+1));
       }
     }
 
