@@ -10,11 +10,10 @@ import javafx.scene.control.Separator;
 
 public class TracingPaper extends Frame implements MouseListener, MouseMotionListener, WindowListener, ActionListener {
   int x, y, red, green, blue, clickCounter;
-  String str = "", clickedButton = "";
+  String str = "", clickedButton = "", cColorCode="0";
   Label coordinates, mouse_activity;
   TextField functionName, colorR, colorG, colorB, stroke ,startAngle, arcAngle;
   Checkbox fill, cCode, javaCode;
-
   ArrayList<Integer> xArr, yArr, xAll, yAll;
   BufferedWriter writer;
   boolean templateBuild;
@@ -48,6 +47,35 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     //set = new Button("SET");
     save = new Button("SAVE");
     clear = new Button("CLEAR");
+
+    Button colorButtons[]= new Button[15]; //set color equavelnt to c color numbers
+    
+    int i=0;
+    Color javaColor[]=new Color[]{
+      Color.BLACK,
+      Color.BLUE,
+      Color.GREEN,
+      Color.CYAN,
+      Color.RED, 
+      Color.MAGENTA,
+      new Color(165,42,42), //BROWN
+      Color.LIGHT_GRAY,
+      Color.DARK_GRAY,
+      new Color(173,216,230), //LIGHTBLUE
+      new Color(144,238,144), //LIGHTGREEN
+      new Color(225,255,255), //LIGHTCYAN
+      new Color(225,105,97), //LIGHTRED
+      new Color(231,139,231), //LIGHTMAGENTA
+      Color.YELLOW,
+      Color.WHITE
+    };                                        //array containing colors equavalent to c colors
+    for(Button b: colorButtons){
+      b=new Button(String.valueOf(i));
+      b.setPreferredSize(new Dimension(14,23)); //w=14,h=23
+      b.addActionListener(this);
+      b.setBackground(javaColor[i++]);
+      rightPanel.add(b);
+    }
 
     oval.addActionListener(this);
     rect.addActionListener(this);
@@ -96,16 +124,13 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     shapes.add(save);
     shapes.add(clear);
 
-
     rightPanel.add(new Label("RGB:"));
     rightPanel.add(colorR);
     rightPanel.add(colorG);
     rightPanel.add(colorB);
     rightPanel.add(new Label("Bold"));
     rightPanel.add(stroke);
-    //shapes.add(set);
-    
-
+  
     coordinates = new Label("X,Y: . . . . .");
     mouse_activity = new Label("Mouse Activity: . . .");
 
@@ -136,9 +161,22 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
   public void actionPerformed(final ActionEvent e) {
     clickedButton = e.getActionCommand();
     System.out.println("clicked button:" + clickedButton);
-    System.out.println("javaCode is checked"+ javaCode.getState());
 
-    try {
+    switch(clickedButton)
+    {
+      case "0": case "1": case "2": case "3": case "4": case "5":
+      case "6": case "7": case "8": case "9": case "10": case "11":
+      case "12": case "13": case "14":
+      Button button = (Button)e.getSource();
+      Color color = button.getBackground();
+      colorR.setText(String.valueOf(color.getRed()));
+      colorG.setText(String.valueOf(color.getGreen()));
+      colorB.setText(String.valueOf(color.getBlue()));
+      cColorCode = button.getLabel();
+      break;
+   }
+
+    try {  
       if (clickedButton == "BUILD" && cCode.getState()) {
         if(templateBuild){
         writer.newLine();
@@ -379,7 +417,6 @@ writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
         writer.newLine();
         writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
 
-
         try {
           final Integer xPoint = xArr.get(0);
           final Integer yPoint = yArr.get(0);
@@ -566,7 +603,8 @@ writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
     g.setColor(Color.BLUE);    
     g2D.setStroke(new BasicStroke(2F));  
     g.drawRect(20, 50, 600, 400);
-    g.drawString("Draw within the BLUE marking for C/C++",200,500);
+    g.drawString("Draw within the BLUE Rectangle for C/C++",200,480);
+    g.drawString("RGB values, stroke width will not work",200,500);
     }
 
     // for creating tracing marks
