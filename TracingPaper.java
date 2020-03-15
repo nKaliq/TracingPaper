@@ -48,7 +48,7 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     save = new Button("SAVE");
     clear = new Button("DROP INPUT");
 
-    Button colorButtons[]= new Button[15]; //set color equavelnt to c color numbers
+    Button colorButtons[]= new Button[16]; //set color equavelnt to c color numbers
     
     int i=0;
     Color javaColor[]=new Color[]{
@@ -247,228 +247,54 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
 
       } else if (clickedButton == "poly" && !(fill.getState())) {
 
-        //setting up color and stroke
-        final String color = colorR.getText() + "," + colorG.getText() + "," + colorB.getText();
-        writer.newLine();
-        writer.write("g.setColor(new Color(" + color + "));");
-        writer.newLine();
-        writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
-
-        final StringBuilder xPoints = new StringBuilder("" + xArr);
-        final StringBuilder yPoints = new StringBuilder("" + yArr);
-        xPoints.deleteCharAt(0);
-        xPoints.deleteCharAt(xPoints.length() - 1);
-        yPoints.deleteCharAt(0);
-        yPoints.deleteCharAt(yPoints.length() - 1);
-         //Post-fixing +x and +y to each coordinate
-         final String xValues = xPoints.toString().replace(",", "+x,");
-         final String yValues = yPoints.toString().replace(",", "+y,");
-
-        writer.newLine();
-        writer.write("int xpoints[]={" + xValues + "+x};");
-        writer.newLine();
-        writer.write("int ypoints[]={" + yValues + "+y};");
-        writer.newLine();
-        writer.write("int points=" + yArr.size() + ";");
-        writer.newLine();
-        writer.write("g.drawPolygon(xpoints,ypoints,points);");
+        colorStrokeSetter();
+        polygonSetup(false);
         clearLastInput();
 
       } else if (clickedButton == "poly" && fill.getState()) {
 
-//setting up color and stroke
-final String color = colorR.getText() + "," + colorG.getText() + "," + colorB.getText();
-writer.newLine();
-writer.write("g.setColor(new Color(" + color + "));");
-writer.newLine();
-writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
-
-        final StringBuilder xPoints = new StringBuilder("" + xArr);
-        final StringBuilder yPoints = new StringBuilder("" + yArr);
-        xPoints.deleteCharAt(0);
-        xPoints.deleteCharAt(xPoints.length() - 1);
-        yPoints.deleteCharAt(0);
-        yPoints.deleteCharAt(yPoints.length() - 1);
-        //Prefixing +x and +y to each coordinate
-        final String xValues = xPoints.toString().replace(",", "+x,");
-        final String yValues = yPoints.toString().replace(",", "+y,");
-
-        writer.newLine();
-        writer.write("int xpoints[]={" + xValues + "+x};");
-        writer.newLine();
-        writer.write("int ypoints[]={" + yValues + "+y};");
-        writer.newLine();
-        writer.write("int points=" + yArr.size() + ";");
-        writer.newLine();
-        writer.write("g.fillPolygon(xpoints,ypoints,points);");
-        
+        colorStrokeSetter();
+        polygonSetup(true);
         clearLastInput();
+
       } else if (clickedButton == "oval" && !(fill.getState())) {
 
-          //setting up color and stroke
-        final String color = colorR.getText() + "," + colorG.getText() + "," + colorB.getText();
-        writer.newLine();
-        writer.write("g.setColor(new Color(" + color + "));");
-        writer.newLine();
-        writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
-
-        try {
-          final Integer xPoint = xArr.get(0);
-          final Integer yPoint = yArr.get(0);
-          final int width = Math.abs(xArr.get(1) - xPoint);
-          final int height = Math.abs(yArr.get(1) - yPoint);
-          final String values = xPoint + "+x ," + yPoint + "+y ," + width + "," + height;
-          writer.newLine();
-          writer.write("g.drawOval(" + values + ");");
-          clearLastInput();
-
-        } catch (final Exception exception) {
-          System.out.println("Insufficient value of Oval: " + exception);
-        }
+        colorStrokeSetter();
+        ovalArcSetup(false, false);
+        clearLastInput();
 
       } else if (clickedButton == "oval" && fill.getState()) {
 
-          //setting up color and stroke
-        final String color = colorR.getText() + "," + colorG.getText() + "," + colorB.getText();
-        writer.newLine();
-        writer.write("g.setColor(new Color(" + color + "));");
-        writer.newLine();
-        writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
+        colorStrokeSetter();
+        ovalArcSetup(true, false);
+        clearLastInput();
 
-        try {
-          final Integer xPoint = xArr.get(0);
-          final Integer yPoint = yArr.get(0);
-          final int width = Math.abs(xArr.get(1) - xPoint);
-          final int height = Math.abs(yArr.get(1) - yPoint);
-          final String values = xPoint + "+x ," + yPoint + "+y ," + width + "," + height;
-          writer.newLine();
-          writer.write("g.fillOval(" + values + ");");
-          clearLastInput();
-
-        } catch (final Exception exception) {
-          System.out.println("Insufficient value of FillOval: " + exception);
-        }
       } else if (clickedButton == "rect" && !(fill.getState())) {
-
-            //setting up color and stroke
-        final String color = colorR.getText() + "," + colorG.getText() + "," + colorB.getText();
-        writer.newLine();
-        writer.write("g.setColor(new Color(" + color + "));");
-        writer.newLine();
-        writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
-        try {
-          final Integer xPoint1 = xArr.get(0);
-          final Integer yPoint1 = yArr.get(0);
-          final int width = Math.abs(xArr.get(1) - xPoint1);
-          final int height = Math.abs(yArr.get(1) - yPoint1);
-
-          final String values = xPoint1 + "+x," + yPoint1 + "+y," + width + "," + height;
-          writer.newLine();
-          writer.write("g.drawRect(" + values + ");");
-          clearLastInput();
-
-        } catch (final Exception exception) {
-          System.out.println("Insufficient value of Rectangle: " + exception);
-        }
+        
+        colorStrokeSetter();
+        rectangleSetup(false);
+        clearLastInput();
+        
       } else if (clickedButton == "rect" && fill.getState()) {
 
-          //setting up color and stroke
-        final String color = colorR.getText() + "," + colorG.getText() + "," + colorB.getText();
-        writer.newLine();
-        writer.write("g.setColor(new Color(" + color + "));");
-        writer.newLine();
-        writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
-
-        try {
-          final Integer xPoint1 = xArr.get(0);
-          final Integer yPoint1 = yArr.get(0);
-          final int width = Math.abs(xArr.get(1) - xPoint1);
-          final int height = Math.abs(yArr.get(1) - yPoint1);
-
-          final String values = xPoint1 + "+x," + yPoint1 + "+y," + width + "," + height;
-          writer.newLine();
-          writer.write("g.fillRect(" + values + ");");
-          clearLastInput();
-
-        } catch (final Exception exception) {
-          System.out.println("Insufficient value of Fill Rectangle: " + exception);
-        }
+        colorStrokeSetter();
+        rectangleSetup(true);
+        clearLastInput();
+        
       } else if (clickedButton == "line") {
-
-            //setting up color and stroke
-        final String color = colorR.getText() + "," + colorG.getText() + "," + colorB.getText();
-        writer.newLine();
-        writer.write("g.setColor(new Color(" + color + "));");
-        writer.newLine();
-        writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
-
-        try {
-          
-          for(int i=0; i< xArr.size()-1 ;i++){
-            writer.newLine();
-            final int x0 = xArr.get(i);
-            final int y0 = yArr.get(i);
-            final int x1 = xArr.get(i+1);
-            final int y1 = yArr.get(i+1);
-            writer.write("g.drawLine("+x0+","+y0+","+x1+","+y1+");");
-            clearLastInput();
-          }
-
-        } catch (final Exception exception) {
-          System.out.println("Insufficient value of Line: " + exception);
-        }
+        colorStrokeSetter();
+        lineSetup();
+        clearLastInput();
+        
       } else if (clickedButton == "arc" && !(fill.getState())) {
-
-            //setting up color and stroke
-        final String color = colorR.getText() + "," + colorG.getText() + "," + colorB.getText();
-        writer.newLine();
-        writer.write("g.setColor(new Color(" + color + "));");
-        writer.newLine();
-        writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
-
-        try {
-          final Integer xPoint = xArr.get(0);
-          final Integer yPoint = yArr.get(0);
-          final int width = Math.abs(xArr.get(1) - xPoint);
-          final int height = Math.abs(yArr.get(1) - yPoint);
-
-          final int startAng = Integer.parseInt(startAngle.getText());
-          final int arcAng = Integer.parseInt(arcAngle.getText());
-
-          final String values = xPoint + "+x," + yPoint + "+y," + width + "," + height + "," + startAng + "," + arcAng;
-          writer.newLine();
-          writer.write("g.drawArc(" + values + ");");
-          clearLastInput();
-
-        } catch (final Exception exception) {
-          System.out.println("Insufficient value of arc: " + exception);
-        }
+        colorStrokeSetter();
+        ovalArcSetup(false, true);
+        clearLastInput();
+        
       } else if (clickedButton == "arc" && fill.getState()) {
-
-            //setting up color and stroke
-        final String color = colorR.getText() + "," + colorG.getText() + "," + colorB.getText();
-        writer.newLine();
-        writer.write("g.setColor(new Color(" + color + "));");
-        writer.newLine();
-        writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
-
-        try {
-          final Integer xPoint = xArr.get(0);
-          final Integer yPoint = yArr.get(0);
-          final int width = Math.abs(xArr.get(1) - xPoint);
-          final int height = Math.abs(yArr.get(1) - yPoint);
-
-          final int startAng = Integer.parseInt(startAngle.getText());
-          final int arcAng = Integer.parseInt(arcAngle.getText());
-
-          final String values = xPoint + "+x," + yPoint + "+y," + width + "," + height + "," + startAng + "," + arcAng;
-          writer.newLine();
-          writer.write("g.fillArc(" + values + ");");
-          clearLastInput();
-
-        } catch (final Exception exception) {
-          System.out.println("Insufficient value of FillArc: " + exception);
-        }
+        colorStrokeSetter();
+        ovalArcSetup(true, true);
+        clearLastInput();
       }
 
       if (clickedButton == "SAVE") {
@@ -492,6 +318,208 @@ writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
       System.out.println("IOException Occoured:" + exception);
     }
   }
+
+  public void ovalArcSetup(boolean fill, boolean isArc){
+    try {
+      final Integer xPoint = xArr.get(0);
+      final Integer yPoint = yArr.get(0);
+      final int width = Math.abs(xArr.get(1) - xPoint);
+      final int height = Math.abs(yArr.get(1) - yPoint);
+  
+      String values="";
+  if(isArc){
+  try{
+          if(javaCode.getState()){
+      final int startAng = Integer.parseInt(startAngle.getText());
+      final int arcAng = Integer.parseInt(arcAngle.getText());
+      values = xPoint + "+x," + yPoint + "+y," + width + "," + height + "," + startAng + "," + arcAng;
+      writer.newLine();
+        if(fill){
+        writer.write("g.fillArc(" + values + ");");
+        }else{
+        writer.write("g.drawArc(" + values + ");");
+        }
+      }else{    // for c code
+        final int startAng = Integer.parseInt(startAngle.getText());
+        final int arcAng = Integer.parseInt(arcAngle.getText());
+
+        int xCentre,yCentre,xRadius,yRadius,startingAngle,endingAngle;
+                xCentre = xArr.get(1) - width /2;
+                yCentre = yArr.get(1) - height /2;
+                xRadius = width /2 ;
+                yRadius = height /2;
+
+        startingAngle = startAng;
+        endingAngle = startAng + arcAng;
+
+        values = xPoint + "+x," + yPoint + "+y," + startingAngle + "," + endingAngle + "," + xRadius + "," + yRadius;
+        writer.newLine();
+        writer.write("ellipse(" + values + ");");
+      }
+    }catch(Exception exception){
+          System.out.println("Start and End angles required for arc");
+          }
+      }
+      else{   //for oval
+
+        if(javaCode.getState()){
+          values = xPoint + "+x," + yPoint + "+y," + width + "," + height ;
+          writer.newLine();
+          if(fill){
+          writer.write("g.fillOval(" + values + ");");
+          }else{
+          writer.write("g.drawOval(" + values + ");");
+          } 
+        }else{ //for c code
+          int xCentre,yCentre,xRadius,yRadius,startingAngle,endingAngle;
+                xCentre = xArr.get(1) - width /2;
+                yCentre = yArr.get(1) - height /2;
+                xRadius = width /2 ;
+                yRadius = height /2;
+
+          if(fill){
+            values = xCentre + "+x," + yCentre + "+y," + xRadius +","+ yRadius ;
+            writer.newLine();
+            writer.write("fillellipse(" + values + ");");
+          }else{
+            values = xCentre + "+x," + yCentre + "+y," + "0" + "," + "360" + "," + xRadius +","+ yRadius ;
+            writer.newLine();
+            writer.write("ellipse(" + values + ");");
+          }
+        }
+
+      }
+     
+    } catch (final Exception exception) {
+      System.out.println("Error occoured while tracing arc or oval: " + exception);
+    }
+  }
+
+  public void lineSetup(){
+    try {
+          
+      for(int i=0; i< xArr.size()-1 ;i++){
+        writer.newLine();
+        final int x0 = xArr.get(i);
+        final int y0 = yArr.get(i);
+        final int x1 = xArr.get(i+1);
+        final int y1 = yArr.get(i+1);
+        if(javaCode.getState())
+        writer.write("g.drawLine("+x0+","+y0+","+x1+","+y1+");");
+        else
+        writer.write("line("+x0+","+y0+","+x1+","+y1+");");
+      }
+
+    } catch (final Exception exception) {
+      System.out.println("Insufficient value of Line: " + exception);
+    }
+  }
+
+  public void rectangleSetup(boolean fill){
+    try {
+
+      final Integer xPoint1 = xArr.get(0);
+      final Integer yPoint1 = yArr.get(0);
+      final int width = Math.abs(xArr.get(1) - xPoint1);
+      final int height = Math.abs(yArr.get(1) - yPoint1);
+      String values="";
+      if(javaCode.getState()){
+        values = xPoint1 + "+x," + yPoint1 + "+y," + width + "," + height;
+
+      writer.newLine();
+      if(fill)
+      writer.write("g.fillRect(" + values + ");");
+      else
+      writer.write("g.drawRect(" + values + ");");
+
+      }else{ // for c code
+        values = xPoint1 + "+x," + yPoint1 + "+y," + (width+xPoint1) + "+x," + (height+yPoint1)+"+y";
+        writer.newLine();
+        if(fill){
+        writer.write("setfillstyle(1,4);");
+        writer.newLine();
+        writer.write("rectangle(" + values + ");");
+        writer.newLine();
+        writer.write("floodfill("+(width+xPoint1 - (width/2))+","+(height+yPoint1 - (height/2))+","+cColorCode+");");
+        }
+        else
+        writer.write("rectangle(" + values + ");");
+
+      }   
+    } catch (final Exception exception) {
+      System.out.println("Insufficient value of Rectangle: " + exception);
+    }
+  }
+
+  public void polygonSetup(boolean fill){
+    try{
+    if(javaCode.getState()){
+      final StringBuilder xPoints = new StringBuilder("" + xArr);
+      final StringBuilder yPoints = new StringBuilder("" + yArr);
+      xPoints.deleteCharAt(0);
+      xPoints.deleteCharAt(xPoints.length() - 1);
+      yPoints.deleteCharAt(0);
+      yPoints.deleteCharAt(yPoints.length() - 1);
+       //Post-fixing +x and +y to each coordinate
+       final String xValues = xPoints.toString().replace(",", "+x,");
+       final String yValues = yPoints.toString().replace(",", "+y,");
+
+      writer.newLine();
+      writer.write("int xpoints[]={" + xValues + "+x};");
+      writer.newLine();
+      writer.write("int ypoints[]={" + yValues + "+y};");
+      writer.newLine();
+      writer.write("int points=" + yArr.size() + ";");
+      writer.newLine();
+        if(fill)
+        writer.write("g.fillPolygon(xpoints,ypoints,points);");
+        else
+        writer.write("g.drawPolygon(xpoints,ypoints,points);");
+      }
+      else{ //for c Code
+          ArrayList<String> xyArr = new ArrayList<>();
+          for(int i=0; i< xArr.size(); i++){
+              xyArr.add(String.valueOf(xArr.get(i))+"+x");
+              xyArr.add(String.valueOf(yArr.get(i))+"+y");
+          }
+          xyArr.add(String.valueOf(xArr.get(0))+"+x");
+          xyArr.add(String.valueOf(yArr.get(0))+"+y");
+          final StringBuilder xyPoints = new StringBuilder("" + xyArr);
+          xyPoints.deleteCharAt(0);
+          xyPoints.deleteCharAt(xyPoints.length() - 1);
+          
+          writer.newLine();
+          writer.write("int points="+ (xyArr.size() / 2) +";");
+          writer.newLine();
+          writer.write("int xyArray[]={"+ xyPoints +"};");
+          writer.newLine();
+            if(fill)
+            writer.write("fillpoly(points,xyArray);");
+            else
+            writer.write("drawpoly(points,xyArray);");
+      }
+    }catch(Exception e){
+      System.out.println("Exception occoured in Polygonsetup");
+    }
+  }
+
+  public void colorStrokeSetter(){
+        final String color = colorR.getText() + "," + colorG.getText() + "," + colorB.getText();
+        try{
+        writer.newLine();
+        if(javaCode.getState()){
+        writer.write("g.setColor(new Color(" + color + "));");
+        writer.newLine();
+        writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
+        }
+        else{
+          writer.write("setcolor("+ cColorCode + ");");
+        }
+      }catch(Exception e){
+        System.out.println("Exception while saving color and stroke");
+      }
+  }
+
   public void clearLastInput(){
     clickCounter = 0;
     clickedButton = "";
@@ -617,7 +645,7 @@ writer.write("g2D.setStroke(new BasicStroke("+stroke.getText() +"F));");
     g2D.setStroke(new BasicStroke(2F));  
     g.drawRect(20, 50, 600, 400);
     g.drawString("Draw within the BLUE Rectangle for C/C++",200,480);
-    g.drawString("RGB values, stroke width will not work",200,500);
+    g.drawString("RGB values, stroke size, fillArc will not work",200,500);
     }
 
     // for creating tracing marks
