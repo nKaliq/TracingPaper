@@ -49,8 +49,10 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     save = new Button("SAVE");
     clear = new Button("DROP INPUT");
 
+    Button clearTraces = new Button("xT");
+    clearTraces.addActionListener(this);
     Button colorButtons[] = new Button[16]; // set color equavelnt to c color numbers
-
+    
     int i = 0;
     Color javaColor[] = new Color[] { Color.BLACK, Color.BLUE, Color.GREEN, Color.CYAN, Color.RED, Color.MAGENTA,
         new Color(165, 42, 42), // BROWN
@@ -60,6 +62,7 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
         new Color(225, 105, 97), // LIGHTRED
         new Color(231, 139, 231), // LIGHTMAGENTA
         Color.YELLOW, Color.WHITE }; // array containing colors equavalent to c colors
+
     for (Button b : colorButtons) {
       b = new Button(String.valueOf(i));
       b.setPreferredSize(new Dimension(14, 23)); // w=14,h=23
@@ -122,6 +125,7 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     rightPanel.add(colorB);
     rightPanel.add(new Label("Bold"));
     rightPanel.add(stroke);
+    rightPanel.add(clearTraces);
 
     coordinates = new Label("X,Y: . . . . .");
     mouse_activity = new Label("Mouse Activity: . . .");
@@ -129,7 +133,7 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     footer.setLayout(new BorderLayout());
     footer.add(coordinates, BorderLayout.WEST);
     footer.add(mouse_activity, BorderLayout.EAST);
-    footer.add(new Label("Press Alt+F4 to QUIT || OutPut on trace.txt || Mouse drag to clear traces"),
+    footer.add(new Label("Press Alt+F4 to QUIT || OutPut on trace.txt || click xT to clear traces"),
         BorderLayout.CENTER);
     footer.setBackground(Color.LIGHT_GRAY);
     this.add(footer, BorderLayout.SOUTH);
@@ -313,10 +317,18 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
       if (clickedButton == "DROP INPUT") {
         clearLastInput();
       }
+      if(clickedButton == "xT"){
+        clearTracingHistory();
+      }
 
     } catch (final Exception exception) {
       System.out.println("IOException Occoured:" + exception);
     }
+  }
+  public void clearTracingHistory(){
+    xAll = new ArrayList<Integer>();
+    yAll = new ArrayList<Integer>();
+    System.out.println("All Tracing Point history Cleared");
   }
 
   public void ovalArcSetup(boolean fill, boolean isArc) {
@@ -624,10 +636,6 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
   public void mouseDragged(final MouseEvent e) {
     x = e.getX();
     y = e.getY();
-
-    xAll = new ArrayList<Integer>();
-    yAll = new ArrayList<Integer>();
-    System.out.println("All Tracing Point Cleared");
 
     str = "Mouse dragged";
     coordinates.setText(x + "," + y);
