@@ -10,11 +10,12 @@ import javafx.scene.control.Separator;
 
 public class TracingPaper extends Frame implements MouseListener, MouseMotionListener, WindowListener, ActionListener {
   int x, y, red, green, blue, clickCounter, polygonCounter;
-  String str = "", clickedButton = "", cColorCode = "0";
+  String str = "", clickedButton = "", cColorCode = "0", selectedShape = "";
   Label coordinates, mouse_activity;
   TextField functionName, colorR, colorG, colorB, stroke, startAngle, arcAngle;
   Checkbox fill, cCode, javaCode;
   ArrayList<Integer> xArr, yArr, xAll, yAll;
+  int[] xSaved, ySaved;
   BufferedWriter writer;
   boolean templateBuild;
 
@@ -24,7 +25,7 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     yArr = new ArrayList<Integer>();
     xAll = new ArrayList<Integer>();
     yAll = new ArrayList<Integer>();
-
+    
     // templateBuild checks if the code template is built on once when the BUILD
     // button is clicked
     templateBuild = false;
@@ -38,7 +39,7 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     final Panel footer = new Panel();
     final Panel shapes = new Panel();
     // button setup .---------------------------
-    Button oval, rect, arc, line, poly, draw, save, clear;
+    Button oval, rect, arc, line, poly, draw, save, clear, clearlast;
     oval = new Button("oval");
     rect = new Button("rect");
     arc = new Button("arc");
@@ -47,9 +48,14 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     draw = new Button("BUILD");
     // set = new Button("SET");
     save = new Button("SAVE");
-    clear = new Button("DROP INPUT");
+    clear = new Button("ALL");
+    clearlast= new Button("LAST");
+
 
     Button clearTraces = new Button("xT");
+    Button pushToFile = new Button(">>");
+
+    pushToFile.addActionListener(this);
     clearTraces.addActionListener(this);
     Button colorButtons[] = new Button[16]; // set color equavelnt to c color numbers
     
@@ -58,7 +64,7 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
         new Color(165, 42, 42), // BROWN
         Color.LIGHT_GRAY, Color.DARK_GRAY, new Color(173, 216, 230), // LIGHTBLUE
         new Color(144, 238, 144), // LIGHTGREEN
-        new Color(225, 255, 255), // LIGHTCYAN
+        new Color(224, 255, 255), // LIGHTCYAN
         new Color(225, 105, 97), // LIGHTRED
         new Color(231, 139, 231), // LIGHTMAGENTA
         Color.YELLOW, Color.WHITE }; // array containing colors equavalent to c colors
@@ -81,6 +87,7 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     // set.addActionListener(this);
     save.addActionListener(this);
     clear.addActionListener(this);
+    clearlast.addActionListener(this);
 
     // button setup ends---------------------------
     CheckboxGroup language = new CheckboxGroup();
@@ -93,8 +100,8 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     colorB = new TextField("0");
     stroke = new TextField("1");
     fill = new Checkbox("Fill", false);
-    startAngle = new TextField(1);
-    arcAngle = new TextField(1);
+    startAngle = new TextField("0");
+    arcAngle = new TextField("0");
 
     footer.setPreferredSize(new Dimension(800, 30));
     shapes.setPreferredSize(new Dimension(800, 30));
@@ -117,7 +124,9 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     shapes.add(functionName);
     shapes.add(draw);
     shapes.add(save);
+    shapes.add(new Label("DROP INPUT:"));
     shapes.add(clear);
+    shapes.add(clearlast);
 
     rightPanel.add(new Label("RGB:"));
     rightPanel.add(colorR);
@@ -126,6 +135,7 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
     rightPanel.add(new Label("Bold"));
     rightPanel.add(stroke);
     rightPanel.add(clearTraces);
+    //rightPanel.add(pushToFile);  -- for future implementation of writing selected line of code to new file
 
     coordinates = new Label("X,Y: . . . . .");
     mouse_activity = new Label("Mouse Activity: . . .");
@@ -192,15 +202,15 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
           writer.newLine();
           writer.write("#include <graphics.h>");
           writer.newLine();
-          writer.write("#include <conio.h>");
+          writer.write("#include <conio.h> //for getch");
           writer.newLine();
           writer.write("#include <dos.h> //for delay");
           writer.newLine();
-          writer.write("void main() { ");
+          writer.write("\nvoid main() { ");
           writer.newLine();
           writer.write("int gd = DETECT, gm;");
           writer.newLine();
-          writer.write("initgraph(&gd, &gm, \"\"); //---specify BGI path");
+          writer.write("initgraph(&gd, &gm, \"\"); //---specify BGI path as C:\\TC3\\BGI or C:\\tc\\bgi");
           writer.newLine();
           writer.write("getch();");
           writer.newLine();
@@ -226,7 +236,7 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
           writer.newLine();
           writer.write("import javax.swing.JFrame;");
           writer.newLine();
-          writer.write("public class DisplayGraphics extends Canvas{");
+          writer.write("\npublic class DisplayGraphics extends Canvas{");
           writer.newLine();
           writer.write("public void paint(Graphics g) {/*Call ur drawing methods here*/}");
           writer.newLine();
@@ -251,11 +261,14 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
 
       } else if (clickedButton == "poly" && !(fill.getState())) {
 
+        canvasDrawingSetup(clickedButton);
+        
         colorStrokeSetter();
         polygonSetup(false);
         clearLastInput();
 
       } else if (clickedButton == "poly" && fill.getState()) {
+        canvasDrawingSetup(clickedButton);
 
         colorStrokeSetter();
         polygonSetup(true);
@@ -263,39 +276,43 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
 
       } else if (clickedButton == "oval" && !(fill.getState())) {
 
+        canvasDrawingSetup(clickedButton);
         colorStrokeSetter();
         ovalArcSetup(false, false);
         clearLastInput();
 
       } else if (clickedButton == "oval" && fill.getState()) {
-
+        canvasDrawingSetup(clickedButton);
         colorStrokeSetter();
         ovalArcSetup(true, false);
         clearLastInput();
 
       } else if (clickedButton == "rect" && !(fill.getState())) {
-
+        canvasDrawingSetup(clickedButton);
         colorStrokeSetter();
         rectangleSetup(false);
         clearLastInput();
 
       } else if (clickedButton == "rect" && fill.getState()) {
-
+        canvasDrawingSetup(clickedButton);
         colorStrokeSetter();
         rectangleSetup(true);
         clearLastInput();
 
       } else if (clickedButton == "line") {
+        canvasDrawingSetup(clickedButton);
         colorStrokeSetter();
         lineSetup();
         clearLastInput();
 
       } else if (clickedButton == "arc" && !(fill.getState())) {
+        canvasDrawingSetup(clickedButton);
         colorStrokeSetter();
         ovalArcSetup(false, true);
         clearLastInput();
 
       } else if (clickedButton == "arc" && fill.getState()) {
+        canvasDrawingSetup(clickedButton);
         colorStrokeSetter();
         ovalArcSetup(true, true);
         clearLastInput();
@@ -314,17 +331,39 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
           System.out.println("exception in opening file or launching cmd");
         }
       }
-      if (clickedButton == "DROP INPUT") {
+      if (clickedButton == "ALL") {
         clearLastInput();
       }
       if(clickedButton == "xT"){
         clearTracingHistory();
+        xSaved = new int[0];
+        ySaved = new int[0];
+        selectedShape = null;
+      }
+      if(clickedButton == "LAST"){
+        if(xArr.size() == 0 || yArr.size() ==0){
+          System.out.println("No value to clear anymore");
+          return;
+        }
+        xArr.remove(xArr.size()-1);
+        yArr.remove(yArr.size()-1);
+        System.out.println("removed last input cordinates");
       }
 
     } catch (final Exception exception) {
       System.out.println("IOException Occoured:" + exception);
     }
   }
+  public void canvasDrawingSetup(String clickedButton){
+    xSaved = new int[xArr.size()]; //converting xArr ArrayList to xSaved Array
+    ySaved = new int[xArr.size()]; //converting xArr ArrayList to xSaved Array
+    for(int i=0;i<xArr.size();i++){
+      xSaved[i]=xArr.get(i);
+      ySaved[i]=yArr.get(i);
+    }
+    selectedShape = clickedButton;
+  }
+
   public void clearTracingHistory(){
     xAll = new ArrayList<Integer>();
     yAll = new ArrayList<Integer>();
@@ -600,6 +639,7 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
 
     xArr.add(x);
     yArr.add(y);
+    selectedShape = null;
 
     repaint();
   }
@@ -653,11 +693,38 @@ public class TracingPaper extends Frame implements MouseListener, MouseMotionLis
       g.fillRect(x + 20, y + 20, 10, 10); // gives the bullet
 
       // set stroke widht
-      g.setColor(Color.BLACK);
       final Graphics2D g2D = (Graphics2D) g;
       g2D.setStroke(new BasicStroke(Float.parseFloat(stroke.getText())));
-      g2D.drawLine(20, 50, 50, 50);
+      
+      // For drawing the shapes on canvas
+      if(selectedShape == "poly" && fill.getState()){
+        g2D.fillPolygon(xSaved, ySaved, xSaved.length);
+      }else if(selectedShape == "poly" && !fill.getState()){
+        g2D.drawPolygon(xSaved, ySaved, xSaved.length);
+      }else if(selectedShape == "oval" && fill.getState()){
+        g2D.fillOval(xSaved[0], ySaved[0], xSaved[1]-xSaved[0], ySaved[1]-ySaved[0]);
+      }else if(selectedShape == "oval" && !fill.getState()){
+        g2D.drawOval(xSaved[0], ySaved[0], xSaved[1]-xSaved[0], ySaved[1]-ySaved[0]);
+      }else if(selectedShape == "arc" && fill.getState()){
+        int angle1=Integer.parseInt(startAngle.getText());
+        int angle2=Integer.parseInt(arcAngle.getText());
+        g2D.fillArc(xSaved[0], ySaved[0], xSaved[1]-xSaved[0], ySaved[1]-ySaved[0],angle1, angle2);
+      }else if(selectedShape == "arc" && !fill.getState()){
+        int angle1=Integer.parseInt(startAngle.getText());
+        int angle2=Integer.parseInt(arcAngle.getText());
+        g2D.drawArc(xSaved[0], ySaved[0], xSaved[1]-xSaved[0], ySaved[1]-ySaved[0],angle1,angle2);
+      }else if(selectedShape == "rect" && fill.getState()){
+        g2D.fillRect(xSaved[0], ySaved[0], xSaved[1]-xSaved[0], ySaved[1]-ySaved[0]);
+      }else if(selectedShape == "rect" && !fill.getState()){
+        g2D.drawRect(xSaved[0], ySaved[0], xSaved[1]-xSaved[0], ySaved[1]-ySaved[0]);
+      }else if(selectedShape == "line"){
+        g2D.drawLine(xSaved[0], ySaved[0], xSaved[1], ySaved[1]);
+      }
 
+      //setting the line width preview
+      g.setColor(Color.BLACK);
+      g2D.drawLine(20, 50, 50, 50);
+      
       // Graphics.h in C window limitation
       if (cCode.getState()) {
         g.setColor(Color.BLUE);
